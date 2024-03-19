@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>DeltaLake</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
+  <widget class="QDialogButtonBox" name="_button_box">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -38,16 +38,16 @@
      <height>34</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="connection_profile_box">
+   <layout class="QHBoxLayout" name="_connection_profile_box">
     <item>
-     <widget class="QLabel" name="connection_profile_label">
+     <widget class="QLabel" name="_connection_profile_label">
       <property name="text">
        <string>Connection profile: </string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QgsFileWidget" name="connection_profile_path"/>
+     <widget class="QgsFileWidget" name="_connection_profile_path"/>
     </item>   
    </layout>
   </widget>
@@ -60,7 +60,7 @@
      <height>116</height>
     </rect>
    </property>
-   <layout class="QFormLayout" name="share_details_form">
+   <layout class="QFormLayout" name="_share_details_form">
     <property name="sizeConstraint">
      <enum>QLayout::SetFixedSize</enum>
     </property>
@@ -71,44 +71,44 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
     <item row="0" column="0">
-     <widget class="QLabel" name="share_name_label">
+     <widget class="QLabel" name="_share_name_label">
       <property name="text">
        <string>Share name:            </string>
       </property>
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="share_name"/>
+     <widget class="QLineEdit" name="_share_name"/>
     </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="schema_name_label">
+     <widget class="QLabel" name="_schema_name_label">
       <property name="text">
        <string>Schema name: </string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="schema_name"/>
+     <widget class="QLineEdit" name="_schema_name"/>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="table_name_label">
+     <widget class="QLabel" name="_table_name_label">
       <property name="text">
        <string>Table name: </string>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="table_name"/>
+     <widget class="QLineEdit" name="_table_name"/>
     </item>
     <item row="3" column="0">
-     <widget class="QLabel" name="epsg_id_label">
+     <widget class="QLabel" name="_epsg_id_label">
       <property name="text">
        <string>EPSG id: </string>
       </property>
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="epsg_id">
+     <widget class="QLineEdit" name="_epsg_id">
       <property name="maximumSize">
        <size>
         <width>100</width>
@@ -130,7 +130,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>button_box</sender>
+   <sender>_button_box</sender>
    <signal>accepted()</signal>
    <receiver>DeltaLakeDialogBase</receiver>
    <slot>accept()</slot>
@@ -146,7 +146,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>button_box</sender>
+   <sender>_button_box</sender>
    <signal>rejected()</signal>
    <receiver>DeltaLakeDialogBase</receiver>
    <slot>reject()</slot>

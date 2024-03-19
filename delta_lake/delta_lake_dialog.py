@@ -42,3 +42,23 @@ class DeltaLakeDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
+    @property
+    def connection_profile_path(self):
+        return self._connection_profile_path.filePath()
+
+    @property
+    def share_name(self):
+        return self._share_name.text()
+
+    @property
+    def schema_name(self):
+        return self._schema_name.text()
+
+    @property
+    def table_name(self):
+        return self._table_name.text()
+
+    @property
+    def epsg_id(self):
+        return self._epsg_id.text()

@@ -221,14 +221,14 @@ class DeltaLake:
             delta_lake_provider_metadata = QgsProviderRegistry.instance().providerMetadata(
                 "delta_lake"
             )
-            uri = delta_lake_provider_metadata.encodeUriFromValues(self.dlg.connection_profile_path.filePath(),
-                                                                   self.dlg.share_name.text(),
-                                                                   self.dlg.schema_name.text(),
-                                                                   self.dlg.table_name.text(),
-                                                                   int(self.dlg.epsg_id.text()))
-            layer = QgsVectorLayer(uri, DeltaLakeProvider.layer_name(self.dlg.share_name.text(),
-                                                                     self.dlg.schema_name.text(),
-                                                                     self.dlg.table_name.text()),
+            uri = delta_lake_provider_metadata.encodeUriFromValues(self.dlg.connection_profile_path,
+                                                                   self.dlg.share_name,
+                                                                   self.dlg.schema_name,
+                                                                   self.dlg.table_name,
+                                                                   int(self.dlg.epsg_id))
+            layer = QgsVectorLayer(uri, DeltaLakeProvider.layer_name(self.dlg.share_name,
+                                                                     self.dlg.schema_name,
+                                                                     self.dlg.table_name),
                                    DeltaLakeProvider.providerKey())
             QgsProject.instance().addMapLayer(layer)
 

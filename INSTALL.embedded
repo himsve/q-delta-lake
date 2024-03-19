@@ -1,0 +1,1 @@
+python -m pip install --no-deps -U -r requirements/embedded.txt -t delta_lake/embedded_external_libs
