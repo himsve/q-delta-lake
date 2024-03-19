@@ -1,0 +1,11 @@
+# Embedded requirements
+#
+# Python packages required by the plugin and which are not included into the embedded Python in QGIS (mainly Windows).
+#
+# Typical command to install:
+# python -m pip install --no-deps -U -r requirements/embedded.txt -t delta_lake/embedded_external_libs
+# -----------------------
+
+delta-sharing==1.0.3
+shapely==2.0.3
+pandas==2.2.1
