@@ -219,7 +219,7 @@ class DeltaLake:
         # See if OK was pressed
         if result:
             delta_lake_provider_metadata = QgsProviderRegistry.instance().providerMetadata(
-                "delta_lake"
+                DeltaLakeProvider.providerKey()
             )
             uri = delta_lake_provider_metadata.encodeUriFromValues(self.dlg.connection_profile_path,
                                                                    self.dlg.share_name,
@@ -257,4 +257,4 @@ def _on_layers_removal(layer_ids: list[str]) -> None:
         layer = QgsProject.instance().mapLayer(layer_id)
         provider = layer.dataProvider()
         if provider and provider.name() == DeltaLakeProvider.providerKey():
-            provider._disconnect_database()
+            provider.disconnect_database()

@@ -110,9 +110,9 @@ class DeltaLakeProvider(QgsVectorDataProvider):
             self._crs = QgsCoordinateReferenceSystem.fromEpsgId(epsg_id)
         else:
             self._crs = QgsCoordinateReferenceSystem()
-        self._table_uri, self._client = self._connect_database(connection_profile_path,
-                                                               share_name, schema_name, table_name)
-        weakref.finalize(self, self._disconnect_database)
+        self._table_uri, self._client = self.connect_database(connection_profile_path,
+                                                              share_name, schema_name, table_name)
+        weakref.finalize(self, self.disconnect_database)
         self._is_valid = True
 
     @classmethod
@@ -155,8 +155,8 @@ class DeltaLakeProvider(QgsVectorDataProvider):
     def isValid(self) -> bool:
         return self._is_valid
 
-    def _connect_database(self, connection_profile_path,
-                          share_name, schema_name, table_name) -> tuple[str, SharingClient]:
+    def connect_database(self, connection_profile_path,
+                         share_name, schema_name, table_name) -> tuple[str, SharingClient]:
         table_uri, client = _client_connect(connection_profile_path,
                                             share_name, schema_name, table_name)
         qlog(table_uri)
@@ -168,8 +168,6 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                                     if "<geometry>" in f['metadata'].get('comment', '--')]
             self._geometry_column = geometry_column_list[0][1] if len(geometry_column_list) > 0 else None
             self._index_geometry_column = geometry_column_list[0][0] if len(geometry_column_list) > 0 else None
-            qlog(self._index_geometry_column)
-            qlog(self._geometry_column)
             self._dataframe: pd.DataFrame = delta_sharing.load_as_pandas(table_uri)
         except FileNotFoundError as e:
             PluginLogger.log(
@@ -180,10 +178,9 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                 push=True,
             )
             raise e
-
         return table_uri, client
 
-    def _disconnect_database(self):
+    def disconnect_database(self):
         self._dataframe = self._dataframe[0:0]
         self._dataframe = None
         self._metadata = None
