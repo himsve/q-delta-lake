@@ -21,11 +21,16 @@
  *                                                                         *
  ***************************************************************************/
 """
-
+import dataclasses
 import os
+import operator
+import pyproj
+from pyproj.enums import PJType
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+
+from delta_lake.provider.delta_lake_provider import client_connect
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -42,6 +47,14 @@ class DeltaLakeDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
+        self._tables = None
+        self._crs_list = None
+        self._share_combo_box.activated.connect(self._table_selected)
+        self._connection_profile_path.fileChanged.connect(self._add_list_tables)
+
+        self._crs_combo_box.activated.connect(self._crs_selected)
+        self._connection_profile_path.fileChanged.connect(self._add_list_crs)
 
     @property
     def connection_profile_path(self):
@@ -62,3 +75,30 @@ class DeltaLakeDialog(QtWidgets.QDialog, FORM_CLASS):
     @property
     def epsg_id(self):
         return self._epsg_id.text()
+
+    def _add_list_tables(self):
+        self._share_combo_box.clear()
+        client = client_connect(self._connection_profile_path.filePath())
+        self._tables = sorted(client.list_all_tables(), key=operator.attrgetter("schema", "name"))
+        self._share_combo_box.addItems([f"{table.schema} - {table.name}" for table in self._tables])
+
+    def _get_current_table(self):
+        return self._tables[self._share_combo_box.currentIndex()]
+
+    def _table_selected(self):
+        self._share_name.setText(self._get_current_table().share)
+        self._schema_name.setText(self._get_current_table().schema)
+        self._table_name.setText(self._get_current_table().name)
+
+    def _add_list_crs(self):
+        self._crs_combo_box.clear()
+        self._crs_list = [(crs.code, crs.name) for crs in
+                          pyproj.database.query_crs_info(auth_name="EPSG", pj_types=[PJType.PROJECTED_CRS, PJType.GEOGRAPHIC_CRS])
+                          if "World" in crs.area_of_use.name or "Netherland" in crs.area_of_use.name]
+        self._crs_combo_box.addItems([f"{crs[0]} - {crs[1]}" for crs in self._crs_list])
+
+    def _get_current_crs(self):
+        return self._crs_list[self._crs_combo_box.currentIndex()]
+
+    def _crs_selected(self):
+        self._epsg_id.setText(self._get_current_crs()[0])

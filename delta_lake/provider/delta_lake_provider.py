@@ -103,6 +103,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
         self._epsg_id = epsg_id
         self._uri = encode_uri_from_values(connection_profile_path,
                                            share_name, schema_name, table_name, epsg_id)
+        self._index_geometry_column = None
 
         super().__init__(self._uri)
 
@@ -157,8 +158,8 @@ class DeltaLakeProvider(QgsVectorDataProvider):
 
     def connect_database(self, connection_profile_path,
                          share_name, schema_name, table_name) -> tuple[str, SharingClient]:
-        table_uri, client = _client_connect(connection_profile_path,
-                                            share_name, schema_name, table_name)
+        client = client_connect(connection_profile_path)
+        table_uri = _table_uri(connection_profile_path, share_name, schema_name, table_name)
         qlog(table_uri)
         try:
             self._metadata: Metadata = delta_sharing.get_table_metadata(table_uri)
@@ -323,8 +324,7 @@ def _table_uri(connection_profile_path,
     return f"{connection_profile_path}#{share_name}.{schema_name}.{table_name}"
 
 
-def _client_connect(connection_profile_path,
-                    share_name, schema_name, table_name) -> tuple[str, SharingClient]:
+def client_connect(connection_profile_path) -> SharingClient:
     """Open a connection to the DeltaLake table
 
     :return: client object
@@ -336,32 +336,16 @@ def _client_connect(connection_profile_path,
 
     path_profile = Path(connection_profile_path).resolve()
     if not path_profile.is_file():
-        raise FileNotFoundError(
-            "Connection profile path does not exist: {}".format(
-                connection_profile_path
-            )
-        )
-
-    table_uri = _table_uri(connection_profile_path, share_name, schema_name, table_name)
-    PluginLogger.log(
-        message="Using the table URI defined at object level: {}".format(
-            table_uri
-        ),
-        log_level=4,
-        push=False,
-    )
+        raise FileNotFoundError("Connection profile path does not exist: {}".format(connection_profile_path))
 
     try:
         client = SharingClient(path_profile)
-
         PluginLogger.log(
             message="Creation of sharing client {} succeeded.".format(path_profile),
             log_level=0,
             push=False,
         )
-
-        return table_uri, client
-
+        return client
     except HTTPError as exc:
         PluginLogger.log(
             "Connection to {} failed. Trace: {}".format(path_profile, exc),

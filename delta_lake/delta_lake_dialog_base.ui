@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>632</width>
-    <height>291</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>270</x>
-     <y>250</y>
+     <y>280</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -57,7 +57,7 @@
      <x>20</x>
      <y>110</y>
      <width>591</width>
-     <height>116</height>
+     <height>152</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="_share_details_form">
@@ -78,7 +78,14 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="_share_name"/>
+     <widget class="QLineEdit" name="_share_name">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="_schema_name_label">
@@ -88,7 +95,14 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="_schema_name"/>
+     <widget class="QLineEdit" name="_schema_name">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="_table_name_label">
@@ -98,22 +112,32 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="_table_name"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="_epsg_id_label">
-      <property name="text">
-       <string>EPSG id: </string>
+     <widget class="QLineEdit" name="_table_name">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
+    <item row="4" column="1">
      <widget class="QLineEdit" name="_epsg_id">
       <property name="maximumSize">
        <size>
         <width>100</width>
         <height>16777215</height>
        </size>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QComboBox" name="_crs_combo_box"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="_epsg_id_label">
+      <property name="text">
+       <string>EPSG id: </string>
       </property>
      </widget>
     </item>
