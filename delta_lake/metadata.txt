@@ -6,7 +6,7 @@
 name=DeltaLake
 qgisMinimumVersion=3.0
 description=With this plugin you can load data from delta lakes
-version=0.1
+version=0.2
 author=Richard Kooijman
 email=kooijman.richard@gmail.com
 
@@ -21,6 +21,7 @@ repository=https://github.com/Bartman0/q-delta-lake
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
 changelog=0.1 initial version
+    0.2 easier input form
 
 # Tags are comma separated with spaces allowed
 tags=database
@@ -41,4 +42,3 @@ deprecated=False
 
 # If the plugin can run on QGIS Server.
 server=False
-

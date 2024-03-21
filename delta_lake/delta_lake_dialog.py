@@ -21,7 +21,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import dataclasses
 import os
 import operator
 import pyproj
@@ -78,9 +77,15 @@ class DeltaLakeDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def _add_list_tables(self):
         self._share_combo_box.clear()
-        client = client_connect(self._connection_profile_path.filePath())
-        self._tables = sorted(client.list_all_tables(), key=operator.attrgetter("schema", "name"))
-        self._share_combo_box.addItems([f"{table.schema} - {table.name}" for table in self._tables])
+        try:
+            client = client_connect(self._connection_profile_path.filePath())
+            self._tables = sorted(client.list_all_tables(), key=operator.attrgetter("schema", "name"))
+            self._share_combo_box.addItems([f"{table.schema} - {table.name}" for table in self._tables])
+        except FileNotFoundError:
+            # connection failed, clear resulting values
+            self._share_name.clear()
+            self._schema_name.clear()
+            self._table_name.clear()
 
     def _get_current_table(self):
         return self._tables[self._share_combo_box.currentIndex()]
@@ -93,7 +98,8 @@ class DeltaLakeDialog(QtWidgets.QDialog, FORM_CLASS):
     def _add_list_crs(self):
         self._crs_combo_box.clear()
         self._crs_list = [(crs.code, crs.name) for crs in
-                          pyproj.database.query_crs_info(auth_name="EPSG", pj_types=[PJType.PROJECTED_CRS, PJType.GEOGRAPHIC_CRS])
+                          pyproj.database.query_crs_info(auth_name="EPSG",
+                                                         pj_types=[PJType.PROJECTED_CRS, PJType.GEOGRAPHIC_CRS])
                           if "World" in crs.area_of_use.name or "Netherland" in crs.area_of_use.name]
         self._crs_combo_box.addItems([f"{crs[0]} - {crs[1]}" for crs in self._crs_list])
 
@@ -102,3 +108,17 @@ class DeltaLakeDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def _crs_selected(self):
         self._epsg_id.setText(self._get_current_crs()[0])
+
+    def validate(self):
+        if (self.share_name == ""
+                or self.schema_name == ""
+                or self.table_name == ""
+                or self.epsg_id == ""):
+            return False
+        try:
+            epsg_code = int(self.epsg_id)
+            if epsg_code < 0:
+                return False
+        except ValueError:
+            return False
+        return True

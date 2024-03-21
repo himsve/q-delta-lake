@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>270</x>
-     <y>280</y>
+     <y>270</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -41,6 +41,9 @@
    <layout class="QHBoxLayout" name="_connection_profile_box">
     <item>
      <widget class="QLabel" name="_connection_profile_label">
+      <property name="whatsThis">
+       <string extracomment="Path to the connection profile credential file as downloaded from Databricks"/>
+      </property>
       <property name="text">
        <string>Connection profile: </string>
       </property>
@@ -55,14 +58,14 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>110</y>
+     <y>91</y>
      <width>591</width>
-     <height>152</height>
+     <height>161</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="_share_details_form">
     <property name="sizeConstraint">
-     <enum>QLayout::SetFixedSize</enum>
+     <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <property name="fieldGrowthPolicy">
      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -153,6 +156,13 @@
     </rect>
    </property>
    <layout class="QHBoxLayout" name="_share_combo_form">
+    <item>
+     <widget class="QLabel" name="_schema_table_label">
+      <property name="text">
+       <string>Schema - table:      </string>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QComboBox" name="_share_combo_box">
       <property name="sizePolicy">

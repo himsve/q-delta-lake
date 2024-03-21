@@ -160,7 +160,6 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                          share_name, schema_name, table_name) -> tuple[str, SharingClient]:
         client = client_connect(connection_profile_path)
         table_uri = _table_uri(connection_profile_path, share_name, schema_name, table_name)
-        qlog(table_uri)
         try:
             self._metadata: Metadata = delta_sharing.get_table_metadata(table_uri)
             self._schema = json.loads(self._metadata.schema_string)
@@ -233,8 +232,6 @@ class DeltaLakeProvider(QgsVectorDataProvider):
             self._fields = QgsFields()
             if self._is_valid:
                 for field in self._schema_fields:
-                    qlog(str(field))
-                    qlog(str(mapping_delta_lake_qgis_type[field['type']]))
                     qgs_field = QgsField(field['name'], type=mapping_delta_lake_qgis_type[field['type']]['type'],
                                          typeName=mapping_delta_lake_qgis_type[field['type']]['type_name'])
                     self._fields.append(qgs_field)
