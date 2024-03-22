@@ -65,7 +65,7 @@ PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui
 #	* Windows:
 #	  AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins'
 
-QGISDIR=/Users/richardkooijman/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins
+QGISDIR=/Users/richardkooijman/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins
 
 #################################################
 # Normally you would not need to edit below here
@@ -73,7 +73,7 @@ QGISDIR=/Users/richardkooijman/Library/Application Support/QGIS/QGIS3/profiles/d
 
 HELP = help/build/html
 
-PLUGIN_UPLOAD = $(c)/plugin_upload.py
+PLUGIN_UPLOAD = ./plugin_upload.py
 
 RESOURCE_SRC=$(shell grep '^ *<file' resources.qrc | sed 's@</file>@@g;s/.*>//g' | tr '\n' ' ')
 
@@ -128,7 +128,7 @@ deploy: compile doc transcompile
 	cp -vfr i18n $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	cp -vfr $(HELP) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/help
 	# Copy extra directories if any
-	(foreach EXTRA_DIR,(EXTRA_DIRS), cp -R (EXTRA_DIR) (HOME)/(QGISDIR)/python/plugins/(PLUGINNAME)/;)
+	(for EXTRA_DIR in ${EXTRA_DIRS}; do cp -R ${EXTRA_DIR} ${HOME}/${QGISDIR}/python/plugins/${PLUGINNAME}/; done)
 
 
 # The dclean target removes compiled python files from plugin directory

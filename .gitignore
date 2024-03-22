@@ -136,4 +136,4 @@ tests/fixtures/tmp_*.db
 embedded_external_libs
 
 # -- MANDATORY -----
-
+/delta_lake/Support
