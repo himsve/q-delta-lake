@@ -133,7 +133,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
     @classmethod
     def description(cls) -> str:
         """Returns the provider description"""
-        return "Delta Lake"
+        return "Delta Share"
 
     @classmethod
     def create_provider(cls, uri, provider_options, flags=QgsDataProvider.ReadFlags()):
@@ -491,4 +491,4 @@ def relative_to_absolute_uri(uri: str, context: QgsReadWriteContext) -> str:
 
 
 def qlog(message):
-    QgsMessageLog.logMessage(message=str(message), tag="log")
+    QgsMessageLog.logMessage(message=str(message), tag="Delta Lake")
