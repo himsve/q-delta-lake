@@ -5,6 +5,7 @@ import weakref
 from pathlib import Path
 from typing import Union
 import json
+import urllib.parse
 from requests.exceptions import HTTPError
 
 import pandas as pd
@@ -103,16 +104,17 @@ class DeltaLakeProvider(QgsVectorDataProvider):
         self._epsg_id = epsg_id
         self._uri = encode_uri_from_values(connection_profile_path,
                                            share_name, schema_name, table_name, epsg_id)
+        self._index_geometry_column = None
 
         super().__init__(self._uri)
 
         if epsg_id:
-            self._crs = QgsCoordinateReferenceSystem.fromEpsgId(epsg_id)
+            self._crs = QgsCoordinateReferenceSystem.fromEpsgId(epsg=epsg_id)
         else:
             self._crs = QgsCoordinateReferenceSystem()
-        self._table_uri, self._client = self._connect_database(connection_profile_path,
-                                                               share_name, schema_name, table_name)
-        weakref.finalize(self, self._disconnect_database)
+        self._table_uri, self._client = self.connect_database(connection_profile_path,
+                                                              share_name, schema_name, table_name)
+        weakref.finalize(self, self.disconnect_database)
         self._is_valid = True
 
     @classmethod
@@ -131,7 +133,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
     @classmethod
     def description(cls) -> str:
         """Returns the provider description"""
-        return "Delta Lake"
+        return "Delta Share"
 
     @classmethod
     def create_provider(cls, uri, provider_options, flags=QgsDataProvider.ReadFlags()):
@@ -155,11 +157,10 @@ class DeltaLakeProvider(QgsVectorDataProvider):
     def isValid(self) -> bool:
         return self._is_valid
 
-    def _connect_database(self, connection_profile_path,
-                          share_name, schema_name, table_name) -> tuple[str, SharingClient]:
-        table_uri, client = _client_connect(connection_profile_path,
-                                            share_name, schema_name, table_name)
-        qlog(table_uri)
+    def connect_database(self, connection_profile_path,
+                         share_name, schema_name, table_name) -> tuple[str, SharingClient]:
+        client = client_connect(connection_profile_path)
+        table_uri = _table_uri(connection_profile_path, share_name, schema_name, table_name)
         try:
             self._metadata: Metadata = delta_sharing.get_table_metadata(table_uri)
             self._schema = json.loads(self._metadata.schema_string)
@@ -168,8 +169,6 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                                     if "<geometry>" in f['metadata'].get('comment', '--')]
             self._geometry_column = geometry_column_list[0][1] if len(geometry_column_list) > 0 else None
             self._index_geometry_column = geometry_column_list[0][0] if len(geometry_column_list) > 0 else None
-            qlog(self._index_geometry_column)
-            qlog(self._geometry_column)
             self._dataframe: pd.DataFrame = delta_sharing.load_as_pandas(table_uri)
         except FileNotFoundError as e:
             PluginLogger.log(
@@ -180,10 +179,9 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                 push=True,
             )
             raise e
-
         return table_uri, client
 
-    def _disconnect_database(self):
+    def disconnect_database(self):
         self._dataframe = self._dataframe[0:0]
         self._dataframe = None
         self._metadata = None
@@ -235,8 +233,6 @@ class DeltaLakeProvider(QgsVectorDataProvider):
             self._fields = QgsFields()
             if self._is_valid:
                 for field in self._schema_fields:
-                    qlog(str(field))
-                    qlog(str(mapping_delta_lake_qgis_type[field['type']]))
                     qgs_field = QgsField(field['name'], type=mapping_delta_lake_qgis_type[field['type']]['type'],
                                          typeName=mapping_delta_lake_qgis_type[field['type']]['type_name'])
                     self._fields.append(qgs_field)
@@ -326,8 +322,7 @@ def _table_uri(connection_profile_path,
     return f"{connection_profile_path}#{share_name}.{schema_name}.{table_name}"
 
 
-def _client_connect(connection_profile_path,
-                    share_name, schema_name, table_name) -> tuple[str, SharingClient]:
+def client_connect(connection_profile_path) -> SharingClient:
     """Open a connection to the DeltaLake table
 
     :return: client object
@@ -337,34 +332,22 @@ def _client_connect(connection_profile_path,
     if connection_profile_path is None:
         raise FileNotFoundError("Connection profile path cannot be None on connection.")
 
-    path_profile = Path(connection_profile_path).resolve()
-    if not path_profile.is_file():
-        raise FileNotFoundError(
-            "Connection profile path does not exist: {}".format(
-                connection_profile_path
-            )
-        )
-
-    table_uri = _table_uri(connection_profile_path, share_name, schema_name, table_name)
-    PluginLogger.log(
-        message="Using the table URI defined at object level: {}".format(
-            table_uri
-        ),
-        log_level=4,
-        push=False,
-    )
-
     try:
+        path_profile = Path(connection_profile_path).resolve(strict=True)
         client = SharingClient(path_profile)
-
         PluginLogger.log(
             message="Creation of sharing client {} succeeded.".format(path_profile),
             log_level=0,
             push=False,
         )
-
-        return table_uri, client
-
+        return client
+    except FileNotFoundError as exc:
+        PluginLogger.log(
+            "Connection profile path does not exist: {}. Trace: {}".format(connection_profile_path, exc),
+            log_level=2,
+            push=True,
+        )
+        raise exc
     except HTTPError as exc:
         PluginLogger.log(
             "Connection to {} failed. Trace: {}".format(path_profile, exc),
@@ -399,7 +382,7 @@ def decode_uri(uri: str) -> dict[str, Union[str, int]]:
     for variable in uri.split(" "):
         key, value = variable.split("=")
         if key == "connection_profile_path":
-            connection_profile_path = value
+            connection_profile_path = urllib.parse.unquote_plus(value)
         elif key == "share_name":
             share_name = value
         elif key == "schema_name":
@@ -444,7 +427,7 @@ def encode_uri(parts: dict[str, str]) -> str:
     :param Dict[str, str] parts: parts as returned by decodeUri
     :returns: uri as string
     """
-    uri = f"connection_profile_path={parts['connection_profile_path']} " \
+    uri = f"connection_profile_path={urllib.parse.quote_plus(parts['connection_profile_path'], safe='/')} " \
         f"share_name={parts['share_name']} schema_name={parts['schema_name']} " \
         f"table_name={parts['table_name']} epsg_id={parts['epsg_id']}"
     return uri
@@ -508,4 +491,4 @@ def relative_to_absolute_uri(uri: str, context: QgsReadWriteContext) -> str:
 
 
 def qlog(message):
-    QgsMessageLog.logMessage(message=str(message), tag="log")
+    QgsMessageLog.logMessage(message=str(message), tag="Delta Lake")

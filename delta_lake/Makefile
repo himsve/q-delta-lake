@@ -1,7 +1,7 @@
 #/***************************************************************************
 # DeltaLake
 #
-# With this plugin you can load data from delta lakes
+# With this plugin you can load data from delta shares
 #							 -------------------
 #		begin				: 2023-12-29
 #		git sha				: $Format:%H$

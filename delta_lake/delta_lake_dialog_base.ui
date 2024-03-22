@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>646</width>
-    <height>253</height>
+    <width>632</width>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>DeltaLake</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
+  <widget class="QDialogButtonBox" name="_button_box">
    <property name="geometry">
     <rect>
      <x>270</x>
-     <y>210</y>
+     <y>270</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -35,34 +35,37 @@
      <x>20</x>
      <y>20</y>
      <width>591</width>
-     <height>34</height>
+     <height>31</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="connection_profile_box">
+   <layout class="QHBoxLayout" name="_connection_profile_box">
     <item>
-     <widget class="QLabel" name="connection_profile_label">
+     <widget class="QLabel" name="_connection_profile_label">
+      <property name="whatsThis">
+       <string extracomment="Path to the connection profile credential file as downloaded from Databricks"/>
+      </property>
       <property name="text">
        <string>Connection profile: </string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QgsFileWidget" name="connection_profile_path"/>
-    </item>   
+     <widget class="QgsFileWidget" name="_connection_profile_path" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>70</y>
-     <width>501</width>
-     <height>116</height>
+     <y>91</y>
+     <width>591</width>
+     <height>161</height>
     </rect>
    </property>
-   <layout class="QFormLayout" name="share_details_form">
+   <layout class="QFormLayout" name="_share_details_form">
     <property name="sizeConstraint">
-     <enum>QLayout::SetFixedSize</enum>
+     <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <property name="fieldGrowthPolicy">
      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -71,49 +74,102 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
     <item row="0" column="0">
-     <widget class="QLabel" name="share_name_label">
+     <widget class="QLabel" name="_share_name_label">
       <property name="text">
        <string>Share name:            </string>
       </property>
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="share_name"/>
+     <widget class="QLineEdit" name="_share_name">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="schema_name_label">
+     <widget class="QLabel" name="_schema_name_label">
       <property name="text">
        <string>Schema name: </string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="schema_name"/>
+     <widget class="QLineEdit" name="_schema_name">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="table_name_label">
+     <widget class="QLabel" name="_table_name_label">
       <property name="text">
        <string>Table name: </string>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="table_name"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="epsg_id_label">
-      <property name="text">
-       <string>EPSG id: </string>
+     <widget class="QLineEdit" name="_table_name">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="epsg_id">
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="_epsg_id">
       <property name="maximumSize">
        <size>
         <width>100</width>
         <height>16777215</height>
        </size>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QComboBox" name="_crs_combo_box"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="_epsg_id_label">
+      <property name="text">
+       <string>EPSG id: </string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>59</y>
+     <width>591</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="_share_combo_form">
+    <item>
+     <widget class="QLabel" name="_schema_table_label">
+      <property name="text">
+       <string>Schema - table:      </string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="_share_combo_box">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
@@ -130,7 +186,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>button_box</sender>
+   <sender>_button_box</sender>
    <signal>accepted()</signal>
    <receiver>DeltaLakeDialogBase</receiver>
    <slot>accept()</slot>
@@ -146,7 +202,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>button_box</sender>
+   <sender>_button_box</sender>
    <signal>rejected()</signal>
    <receiver>DeltaLakeDialogBase</receiver>
    <slot>reject()</slot>
