@@ -5,6 +5,7 @@ import weakref
 from pathlib import Path
 from typing import Union
 import json
+import urllib.parse
 from requests.exceptions import HTTPError
 
 import pandas as pd
@@ -108,7 +109,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
         super().__init__(self._uri)
 
         if epsg_id:
-            self._crs = QgsCoordinateReferenceSystem.fromEpsgId(epsg_id)
+            self._crs = QgsCoordinateReferenceSystem.fromEpsgId(epsg=epsg_id)
         else:
             self._crs = QgsCoordinateReferenceSystem()
         self._table_uri, self._client = self.connect_database(connection_profile_path,
@@ -331,11 +332,8 @@ def client_connect(connection_profile_path) -> SharingClient:
     if connection_profile_path is None:
         raise FileNotFoundError("Connection profile path cannot be None on connection.")
 
-    path_profile = Path(connection_profile_path).resolve()
-    if not path_profile.is_file():
-        raise FileNotFoundError("Connection profile path does not exist: {}".format(connection_profile_path))
-
     try:
+        path_profile = Path(connection_profile_path).resolve(strict=True)
         client = SharingClient(path_profile)
         PluginLogger.log(
             message="Creation of sharing client {} succeeded.".format(path_profile),
@@ -343,6 +341,13 @@ def client_connect(connection_profile_path) -> SharingClient:
             push=False,
         )
         return client
+    except FileNotFoundError as exc:
+        PluginLogger.log(
+            "Connection profile path does not exist: {}. Trace: {}".format(connection_profile_path, exc),
+            log_level=2,
+            push=True,
+        )
+        raise exc
     except HTTPError as exc:
         PluginLogger.log(
             "Connection to {} failed. Trace: {}".format(path_profile, exc),
@@ -377,7 +382,7 @@ def decode_uri(uri: str) -> dict[str, Union[str, int]]:
     for variable in uri.split(" "):
         key, value = variable.split("=")
         if key == "connection_profile_path":
-            connection_profile_path = value
+            connection_profile_path = urllib.parse.unquote_plus(value)
         elif key == "share_name":
             share_name = value
         elif key == "schema_name":
@@ -422,7 +427,7 @@ def encode_uri(parts: dict[str, str]) -> str:
     :param Dict[str, str] parts: parts as returned by decodeUri
     :returns: uri as string
     """
-    uri = f"connection_profile_path={parts['connection_profile_path']} " \
+    uri = f"connection_profile_path={urllib.parse.quote_plus(parts['connection_profile_path'], safe='/')} " \
         f"share_name={parts['share_name']} schema_name={parts['schema_name']} " \
         f"table_name={parts['table_name']} epsg_id={parts['epsg_id']}"
     return uri
