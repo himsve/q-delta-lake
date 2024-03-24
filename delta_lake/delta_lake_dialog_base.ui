@@ -75,6 +75,15 @@
     </property>
     <item row="0" column="0">
      <widget class="QLabel" name="_share_name_label">
+      <property name="toolTip">
+       <string extracomment="The share name of the selected Delta Share table"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
+      <property name="whatsThis">
+       <string extracomment="The share name of the selected Delta Share table"/>
+      </property>
       <property name="text">
        <string>Share name:            </string>
       </property>
@@ -88,10 +97,25 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="toolTip">
+       <string extracomment="The share name of the selected Delta Share table"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
      </widget>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="_schema_name_label">
+      <property name="toolTip">
+       <string extracomment="The schema name of the selected Delta Share table"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
+      <property name="whatsThis">
+       <string extracomment="The schema name of the selected Delta Share table"/>
+      </property>
       <property name="text">
        <string>Schema name: </string>
       </property>
@@ -105,10 +129,25 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="toolTip">
+       <string extracomment="The schema name of the selected Delta Share table"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
      </widget>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="_table_name_label">
+      <property name="toolTip">
+       <string extracomment="The table name of the selected Delta Share table"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
+      <property name="whatsThis">
+       <string extracomment="The table name of the selected Delta Share table"/>
+      </property>
       <property name="text">
        <string>Table name: </string>
       </property>
@@ -122,6 +161,12 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="toolTip">
+       <string extracomment="The table name of the selected Delta Share table"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
      </widget>
     </item>
     <item row="4" column="1">
@@ -132,6 +177,12 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="toolTip">
+       <string extracomment="Selected EPSG id that should be applied on the source data"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
      </widget>
     </item>
     <item row="3" column="1">
@@ -139,6 +190,18 @@
     </item>
     <item row="3" column="0">
      <widget class="QLabel" name="_epsg_id_label">
+      <property name="toolTip">
+       <string extracomment="Selector for designating the EPSG id that should be applied on the source data"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
+      <property name="statusTip">
+       <string/>
+      </property>
+      <property name="whatsThis">
+       <string extracomment="Selector for designating the EPSG id that should be applied on the source data"/>
+      </property>
       <property name="text">
        <string>EPSG id: </string>
       </property>
@@ -158,6 +221,15 @@
    <layout class="QHBoxLayout" name="_share_combo_form">
     <item>
      <widget class="QLabel" name="_schema_table_label">
+      <property name="toolTip">
+       <string extracomment="Selector for designating the desired schema and table to read data from"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>1000</number>
+      </property>
+      <property name="whatsThis">
+       <string extracomment="Selector for designating the desired schema and table to read data from"/>
+      </property>
       <property name="text">
        <string>Schema - table:      </string>
       </property>
