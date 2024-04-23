@@ -6,7 +6,7 @@
 name=Delta Shares
 qgisMinimumVersion=3.0
 description=With this plugin you can load data from delta shares
-version=0.3
+version=0.4
 author=Richard Kooijman
 email=kooijman.richard@gmail.com
 
@@ -23,6 +23,7 @@ hasProcessingProvider=no
 changelog=0.1 initial version
     0.2 easier input form
     0.3 added documentation in README's
+    0.4 fixed installation error
 
 # Tags are comma separated with spaces allowed
 tags=database

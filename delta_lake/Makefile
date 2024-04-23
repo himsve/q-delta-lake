@@ -18,10 +18,7 @@
 # *																		 *
 # ***************************************************************************/
 
-#################################################
-# Edit the following to match your sources lists
-#################################################
-
+SHELL = /bin/bash
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
@@ -35,22 +32,26 @@ LOCALES = nl
 #LRELEASE = lrelease-qt4
 
 
+#################################################
+# Edit the following to match your sources lists
+#################################################
+
 # translation
 SOURCES = \
-	__init__.py \
+	__init__.py __about__.py \
 	delta_lake.py delta_lake_dialog.py
 
 PLUGINNAME = delta_lake
 
 PY_FILES = \
-	__init__.py \
+	__init__.py __about__.py \
 	delta_lake.py delta_lake_dialog.py
 
 UI_FILES = delta_lake_dialog_base.ui
 
 EXTRAS = metadata.txt icon.png
 
-EXTRA_DIRS =
+EXTRA_DIRS = provider help i18n
 
 COMPILED_RESOURCE_FILES = resources.py
 
@@ -59,13 +60,13 @@ PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui
 # QGISDIR points to the location where your plugin should be installed.
 # This varies by platform, relative to your HOME directory:
 #	* Linux:
-#	  .local/share/QGIS/QGIS3/profiles/default/python/plugins/
+#	  .local/share/QGIS/QGIS3/profiles/default
 #	* Mac OS X:
-#	  Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins
+#	  Library/Application Support/QGIS/QGIS3/profiles/default
 #	* Windows:
-#	  AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins'
+#	  AppData\Roaming\QGIS\QGIS3\profiles\default'
 
-QGISDIR=/Users/richardkooijman/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins
+QGISDIR=./Library/Application\ Support/QGIS/QGIS3/profiles/default
 
 #################################################
 # Normally you would not need to edit below here
@@ -117,7 +118,7 @@ deploy: compile doc transcompile
 	@echo "------------------------------------------"
 	@echo "Deploying plugin to your .qgis2 directory."
 	@echo "------------------------------------------"
-	# The deploy  target only works on unix like operating system where
+	# The deploy target only works on unix like operating system where
 	# the Python plugin directory is located at:
 	# $HOME/$(QGISDIR)/python/plugins
 	mkdir -p $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
@@ -125,10 +126,10 @@ deploy: compile doc transcompile
 	cp -vf $(UI_FILES) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	cp -vf $(COMPILED_RESOURCE_FILES) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	cp -vf $(EXTRAS) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
-	cp -vfr i18n $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	cp -vfr $(HELP) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/help
+	cp -vfr i18n $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	# Copy extra directories if any
-	(for EXTRA_DIR in ${EXTRA_DIRS}; do cp -R ${EXTRA_DIR} ${HOME}/${QGISDIR}/python/plugins/${PLUGINNAME}/; done)
+	for EXTRA_DIR in $(EXTRA_DIRS); do cp -R $${EXTRA_DIR} $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/; done
 
 
 # The dclean target removes compiled python files from plugin directory
@@ -208,7 +209,8 @@ clean:
 	@echo "------------------------------------"
 	@echo "Removing uic and rcc generated files"
 	@echo "------------------------------------"
-	rm $(COMPILED_UI_FILES) $(COMPILED_RESOURCE_FILES)
+	rm -f $(COMPILED_UI_FILES) $(COMPILED_RESOURCE_FILES)
+	find . -type d -name __pycache__ -exec rm -fr {} \;
 
 doc:
 	@echo

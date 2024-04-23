@@ -137,3 +137,4 @@ embedded_external_libs
 
 # -- MANDATORY -----
 /delta_lake/Support
+.DS_Store
