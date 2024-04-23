@@ -20,3 +20,15 @@ Unreleased
 
 - First release
 - Based on QDuckDB QGIS plugin
+
+## 0.2 
+
+- easier input form
+
+## 0.3 
+
+- added documentation in README's
+
+## 0.4
+
+- fixed plugin installation

@@ -29,7 +29,7 @@ from pyproj.enums import PJType
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 
-from delta_lake.provider.delta_lake_provider import client_connect
+from .provider.delta_lake_provider import client_connect
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
