@@ -272,7 +272,7 @@ class TestQDuckDBProvider(unittest.TestCase):
 
         feats = provider.getFeatures(request)
         for i, feat in enumerate(feats):
-            geom = QgsGeometry.fromWkt(liste_point[i])
+            geom = QgsGeometry.fromWkb(liste_point[i])
             geom.transform(transform)
             self.assertNotEqual(feat.geometry().asWkt(), liste_point[i])
             self.assertEqual(feat.geometry().asWkt(), geom.asWkt())

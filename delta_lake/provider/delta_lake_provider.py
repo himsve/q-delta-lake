@@ -9,7 +9,8 @@ import urllib.parse
 from requests.exceptions import HTTPError
 
 import pandas as pd
-from shapely import from_wkt, total_bounds
+import geopandas as gpd
+from shapely import from_wkt, from_wkb, total_bounds, wkb, wkb
 
 from qgis.core import (
     Qgis,
@@ -170,6 +171,11 @@ class DeltaLakeProvider(QgsVectorDataProvider):
             self._geometry_column = geometry_column_list[0][1] if len(geometry_column_list) > 0 else None
             self._index_geometry_column = geometry_column_list[0][0] if len(geometry_column_list) > 0 else None
             self._dataframe: pd.DataFrame = delta_sharing.load_as_pandas(table_uri)
+            
+            '''
+            pd["posisjon"] = gpd.GeoSeries.from_wkb(pd["posisjon"])
+            pd["omrade"] = gpd.GeoSeries.from_wkb(pd["omrade"])
+            '''
         except FileNotFoundError as e:
             PluginLogger.log(
                 self.tr(
@@ -201,10 +207,13 @@ class DeltaLakeProvider(QgsVectorDataProvider):
             self._wkb_type = QgsWkbTypes.Unknown
             if self._is_valid and self._geometry_column is not None:
                 # get the first occurring value in the geometry column
-                geometry_delta_lake = from_wkt(self._dataframe[self._geometry_column].bfill()[0],
-                                               on_invalid="warn").geom_type
-                self._wkb_type = mapping_delta_lake_qgis_geometry.get(geometry_delta_lake,
-                                                                      QgsWkbTypes.Unknown)
+                try:
+                    geometry_delta_lake = from_wkb(self._dataframe[self._geometry_column].bfill()[0], on_invalid="warn").geom_type
+                    self._wkb_type = mapping_delta_lake_qgis_geometry.get(geometry_delta_lake, QgsWkbTypes.Unknown)
+                except:
+                    #self._wkb_type = QgsWkbTypes.Unknown
+                    self._is_valid = False
+              
                 if self._wkb_type == QgsWkbTypes.Unknown:
                     PluginLogger.log(
                         self.tr(
@@ -229,12 +238,20 @@ class DeltaLakeProvider(QgsVectorDataProvider):
         """Detects field name and type. Converts the type into a QVariant, and returns a
         QgsFields containing QgsFields.
         """
+        
         if not self._fields:
             self._fields = QgsFields()
             if self._is_valid:
                 for field in self._schema_fields:
-                    qgs_field = QgsField(field['name'], type=mapping_delta_lake_qgis_type[field['type']]['type'],
-                                         typeName=mapping_delta_lake_qgis_type[field['type']]['type_name'])
+                    # print (f"name: {field['name']} type: {field['type']}")
+                    
+                    if type(field['type']) is dict:
+                        qgs_field = QgsField(field['name'], type=mapping_delta_lake_qgis_type[field['type']['type']]['type'],
+                                             typeName=mapping_delta_lake_qgis_type[field['type']['type']]['type_name'])
+                    else:                        
+                        qgs_field = QgsField(field['name'], type=mapping_delta_lake_qgis_type[field['type']]['type'],
+                                             typeName=mapping_delta_lake_qgis_type[field['type']]['type_name'])
+                        
                     self._fields.append(qgs_field)
         return self._fields
 
@@ -248,7 +265,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                     log_level=4,
                 )
             else:
-                extent_bounds = total_bounds(from_wkt(self._dataframe[self._geometry_column]))
+                extent_bounds = total_bounds(from_wkb(self._dataframe[self._geometry_column]))
                 self._extent = QgsRectangle(*extent_bounds)
 
                 PluginLogger.log(

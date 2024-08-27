@@ -42,7 +42,7 @@ class QGISTest(unittest.TestCase):
             'SPHEROID["WGS_1984",6378137.0,298.257223563]],'
             'PRIMEM["Greenwich",0.0],UNIT["Degree",'
             '0.0174532925199433]]')
-        crs.createFromWkt(wkt)
+        crs.createFromWkb(wkt)
         auth_id = crs.authid()
         expected_auth_id = 'EPSG:4326'
         self.assertEqual(auth_id, expected_auth_id)

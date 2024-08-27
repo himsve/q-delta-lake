@@ -98,9 +98,8 @@ class DeltaLakeDialog(QtWidgets.QDialog, FORM_CLASS):
     def _add_list_crs(self):
         self._crs_combo_box.clear()
         self._crs_list = [(crs.code, crs.name) for crs in
-                          pyproj.database.query_crs_info(auth_name="EPSG",
-                                                         pj_types=[PJType.PROJECTED_CRS, PJType.GEOGRAPHIC_CRS])
-                          if "World" in crs.area_of_use.name or "Netherlands" in crs.area_of_use.name]
+                          pyproj.database.query_crs_info(auth_name="EPSG", pj_types=[PJType.PROJECTED_CRS, PJType.GEOGRAPHIC_CRS])
+                          if "Norway" in crs.area_of_use.name]
         self._crs_combo_box.addItems([f"{crs[0]} - {crs[1]}" for crs in self._crs_list])
 
     def _get_current_crs(self):

@@ -8,7 +8,9 @@ mapping_delta_lake_qgis_geometry = {
     "MultiPolygon": QgsWkbTypes.MultiPolygon,
     "Point": QgsWkbTypes.Point,
     "Polygon": QgsWkbTypes.Polygon,
-    # ...
+    "PointZ": QgsWkbTypes.PointZ,
+    "LineStringZ": QgsWkbTypes.LineStringZ,
+    "PolygonZ": QgsWkbTypes.PolygonZ,
 }
 
 mapping_delta_lake_qgis_type = {
@@ -20,4 +22,6 @@ mapping_delta_lake_qgis_type = {
     "timestamp": { "type": QVariant.DateTime, "type_name": "datetime" },
     "timestamp_ntz": { "type": QVariant.DateTime, "type_name": "datetime" },
     "string": { "type": QVariant.String, "type_name": "string" },
+    "binary": { "type": QVariant.ByteArray, "type_name": "binary" },
+    "struct": { "type": QVariant.Map, "type_name": "map" },
 }
