@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'DeltaLake'
-copyright = u'2013, Richard Kooijman'
+project = u'TBD'
+copyright = u'TBD'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -178,8 +178,8 @@ htmlhelp_basename = 'TemplateClassdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'DeltaLake.tex', u'DeltaLake Documentation',
-   u'Richard Kooijman', 'manual'),
+  ('index', 'DeltaLake.tex', u'TBD Documentation',
+   u'TBD', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -211,6 +211,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'TemplateClass', u'DeltaLake Documentation',
-     [u'Richard Kooijman'], 1)
+    ('index', 'TemplateClass', u'TBD Documentation',
+     [u'TBD'], 1)
 ]

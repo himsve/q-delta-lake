@@ -211,25 +211,6 @@ class DeltaLake:
             self.first_start = False
             self.dlg = DeltaLakeDialog()
 
-        # self.dlg.show()
-        # result = self.dlg.exec_()
-        # # See if OK was pressed
-        # if result:
-        #     delta_lake_provider_metadata = QgsProviderRegistry.instance().providerMetadata(
-        #         DeltaLakeProvider.providerKey()
-        #     )
-        #     uri = delta_lake_provider_metadata.encodeUriFromValues(self.dlg.connection_profile_path,
-        #                                                            self.dlg.share_name,
-        #                                                            self.dlg.schema_name,
-        #                                                            self.dlg.table_name,
-        #                                                            int(self.dlg.epsg_id))
-        #     layer = QgsVectorLayer(uri, DeltaLakeProvider.layer_name(self.dlg.share_name,
-        #                                                              self.dlg.schema_name,
-        #                                                              self.dlg.table_name),
-        #                            DeltaLakeProvider.providerKey())
-        #     QgsProject.instance().addMapLayer(layer)
-
-        # show the dialog
         while True:
             self.dlg.show()
             # Run the dialog event loop

@@ -9,3 +9,8 @@
 delta-sharing==1.0.3
 shapely==2.0.3
 pandas==2.2.1
+geopandas==1.0.1
+cache-pandas==1.0.0
+typing-extensions
+polars==1.6.0
+

@@ -10,7 +10,8 @@ from requests.exceptions import HTTPError
 
 import pandas as pd
 import geopandas as gpd
-from shapely import from_wkt, from_wkb, total_bounds, wkb, wkb
+from shapely import from_wkb, total_bounds
+import polars as pl
 
 from qgis.core import (
     Qgis,
@@ -162,6 +163,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                          share_name, schema_name, table_name) -> tuple[str, SharingClient]:
         client = client_connect(connection_profile_path)
         table_uri = _table_uri(connection_profile_path, share_name, schema_name, table_name)
+        print('--> Connecting to database')
         try:
             self._metadata: Metadata = delta_sharing.get_table_metadata(table_uri)
             self._schema = json.loads(self._metadata.schema_string)
@@ -171,11 +173,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
             self._geometry_column = geometry_column_list[0][1] if len(geometry_column_list) > 0 else None
             self._index_geometry_column = geometry_column_list[0][0] if len(geometry_column_list) > 0 else None
             self._dataframe: pd.DataFrame = delta_sharing.load_as_pandas(table_uri)
-            
-            '''
-            pd["posisjon"] = gpd.GeoSeries.from_wkb(pd["posisjon"])
-            pd["omrade"] = gpd.GeoSeries.from_wkb(pd["omrade"])
-            '''
+
         except FileNotFoundError as e:
             PluginLogger.log(
                 self.tr(
@@ -208,12 +206,12 @@ class DeltaLakeProvider(QgsVectorDataProvider):
             if self._is_valid and self._geometry_column is not None:
                 # get the first occurring value in the geometry column
                 try:
-                    geometry_delta_lake = from_wkb(self._dataframe[self._geometry_column].bfill()[0], on_invalid="warn").geom_type
+                    geometry_delta_lake = from_wkb(self._dataframe[self._geometry_column][0], on_invalid="warn").geom_type
                     self._wkb_type = mapping_delta_lake_qgis_geometry.get(geometry_delta_lake, QgsWkbTypes.Unknown)
                 except:
-                    #self._wkb_type = QgsWkbTypes.Unknown
+                    self._wkb_type = QgsWkbTypes.Unknown
                     self._is_valid = False
-              
+                print(geometry_delta_lake)
                 if self._wkb_type == QgsWkbTypes.Unknown:
                     PluginLogger.log(
                         self.tr(
@@ -223,6 +221,7 @@ class DeltaLakeProvider(QgsVectorDataProvider):
                         duration=15,
                         push=True,
                     )
+        print('--> Returning wkb type')
         return self._wkb_type
 
     def get_geometry_column(self) -> str:

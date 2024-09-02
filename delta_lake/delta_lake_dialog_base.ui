@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>DeltaLake</string>
+   <string>test-Delta-Lake</string>
   </property>
   <widget class="QDialogButtonBox" name="_button_box">
    <property name="geometry">

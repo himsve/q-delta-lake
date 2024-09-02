@@ -28,11 +28,15 @@ class DeltaLakeFeatureSource(QgsAbstractFeatureSource):
             self._subset_expression.prepare(self._expression_context)
         else:
             self._subset_expression = None
+        self._feature_cache = None
+        self._request_cache = None
 
     def getFeatures(self, request):
-        return QgsFeatureIterator(
-            DeltaLakeFeatureIterator(self, request)
-        )
+        if self._feature_cache is None or self._request_cache != request:
+            self._feature_cache = QgsFeatureIterator(
+                    DeltaLakeFeatureIterator(self, request)
+                )
+        return self._feature_cache
 
     def get_provider(self):
         return self._provider
